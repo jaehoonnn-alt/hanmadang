@@ -37,28 +37,26 @@ button.alt { background: #fff; color: var(--navy); border: 1.5px solid var(--nav
 .codes td.c { font-family: monospace; font-size: 1.1rem; font-weight: 700; letter-spacing: .15em; }
 @media (max-width: 600px) { .sheet { grid-template-columns: 1fr; } }
 @media print {
+  @page { size: A4; margin: 12mm; }
   body { background: #fff; }
-  .panel { display: none; }
-  .sheet { grid-template-columns: repeat(2, 1fr); padding: 0; gap: 10mm; }
-  .qrcard { height: 128mm; }
-  .codes { page-break-before: always; }
-  .onlybtn { display: none !important; }
-  /* 하나만 인쇄할 때: 그 카드만 A4 한 장에 크게 */
+  .panel, .onlybtn { display: none !important; }
+  /* 한 장에 카드 하나씩, 크게 */
+  .sheet { display: block; padding: 0; max-width: none; }
+  .qrcard { height: 265mm; align-content: center; gap: 6mm; border-width: 3px; padding: 12mm; break-after: page; page-break-after: always; }
+  .qrcard:last-child { break-after: auto; page-break-after: auto; }
+  .qrcard .no { font-size: 20pt; padding: 2mm 8mm; }
+  .qrcard h2 { font-size: 26pt; }
+  .qrcard .sc, .qrcard .hint { font-size: 15pt; }
+  .qrcard .qr img, .qrcard .qr canvas { width: 140mm; height: 140mm; }
+  /* '이 QR만 인쇄'를 눌렀을 때는 그 카드만 */
   body.one .qrcard:not(.only) { display: none !important; }
-  body.one .sheet { display: block; }
-  body.one .qrcard.only { height: 265mm; align-content: center; gap: 6mm; border-width: 3px; padding: 12mm; }
-  body.one .qrcard.only .no { font-size: 20pt; padding: 2mm 8mm; }
-  body.one .qrcard.only h2 { font-size: 26pt; }
-  body.one .qrcard.only .sc { font-size: 15pt; }
-  body.one .qrcard.only .hint { font-size: 15pt; }
-  body.one .qrcard.only .qr img, body.one .qrcard.only .qr canvas { width: 140mm; height: 140mm; }
 }
 </style>
 </head>
 <body>
 <div class="panel">
   <h1>부스 QR 인쇄 (운영 선생님용)</h1>
-  <p>넷리파이에 올린 뒤 이 페이지를 열면 주소가 자동으로 들어가요. 주소가 바뀌면 아래 칸에 새 주소를 넣고 'QR 다시 만들기'를 누르세요. '인쇄하기'는 전체를 A4 한 장에 4개씩, 카드 아래 '이 QR만 인쇄'는 그 부스 하나만 A4 한 장에 크게 인쇄해요.</p>
+  <p>넷리파이에 올린 뒤 이 페이지를 열면 주소가 자동으로 들어가요. 주소가 바뀌면 아래 칸에 새 주소를 넣고 'QR 다시 만들기'를 누르세요. '인쇄하기'는 모든 QR을 한 장에 하나씩 크게, 카드 아래 '이 QR만 인쇄'는 그 부스 한 장만 인쇄해요.</p>
   <label for="base">홈페이지 주소</label>
   <input id="base" placeholder="https://예시.netlify.app/">
   <div class="row">
