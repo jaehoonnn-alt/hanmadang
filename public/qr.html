@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>부스 QR 인쇄 | 충남 수학교육 한마당</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap">
+<style>
+:root { --navy: #173F7A; --blue: #1A8ACB; --sky: #8ED3F3; --line: #D5E5EF; --ink: #1B2A3E; --muted: #5D6E85; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; font-family: "Noto Sans KR", "Malgun Gothic", sans-serif; color: var(--ink); background: #F3F8FB; word-break: keep-all; }
+.panel { max-width: 900px; margin: 0 auto; padding: 20px 16px; display: grid; gap: 12px; }
+.panel h1 { margin: 0; font-family: "Noto Sans KR", sans-serif; color: var(--navy); font-size: 1.5rem; }
+.panel p { margin: 0; color: var(--muted); }
+.panel label { font-weight: 700; }
+.panel input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--line); border-radius: 10px; font: inherit; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+button { font: inherit; font-weight: 700; border: 0; border-radius: 10px; padding: 10px 16px; background: var(--navy); color: #fff; cursor: pointer; }
+button.alt { background: #fff; color: var(--navy); border: 1.5px solid var(--navy); }
+.sheet { max-width: 900px; margin: 0 auto; padding: 0 16px 40px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.qrcard { background: #fff; border: 2px solid var(--navy); border-radius: 16px; padding: 18px; display: grid; justify-items: center; gap: 8px; text-align: center; break-inside: avoid; page-break-inside: avoid; }
+.qrcard .no { font-family: "Noto Sans KR", sans-serif; color: #fff; background: var(--blue); border-radius: 999px; padding: 4px 16px 2px; font-size: 1.1rem; }
+.qrcard h2 { margin: 0; font-family: "Noto Sans KR", sans-serif; color: var(--navy); font-size: 1.15rem; line-height: 1.35; }
+.qrcard .sc { color: var(--muted); font-size: .9rem; }
+.qrcard .qr { padding: 8px; background: #fff; }
+.qrcard .hint { font-size: .85rem; font-weight: 700; color: var(--navy); }
+.qrcard .url { font-size: .65rem; color: var(--muted); word-break: break-all; }
+.qrcard.home { border-color: var(--blue); background: #E8F6FD; }
+.codes { max-width: 900px; margin: 0 auto 40px; padding: 0 16px; }
+.codes table { width: 100%; border-collapse: collapse; background: #fff; }
+.codes th, .codes td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; font-size: .9rem; }
+.codes th { background: var(--navy); color: #fff; }
+.codes td.c { font-family: monospace; font-size: 1.1rem; font-weight: 700; letter-spacing: .15em; }
+@media (max-width: 600px) { .sheet { grid-template-columns: 1fr; } }
+@media print {
+  body { background: #fff; }
+  .panel { display: none; }
+  .sheet { grid-template-columns: repeat(2, 1fr); padding: 0; gap: 10mm; }
+  .qrcard { height: 128mm; }
+  .codes { page-break-before: always; }
+}
+</style>
+</head>
+<body>
+<div class="panel">
+  <h1>부스 QR 인쇄 (운영 선생님용)</h1>
+  <p>넷리파이에 올린 뒤 이 페이지를 열면 주소가 자동으로 들어가요. 주소가 바뀌면 아래 칸에 새 주소를 넣고 'QR 다시 만들기'를 누르세요. A4 한 장에 2개씩 인쇄돼요.</p>
+  <label for="base">홈페이지 주소</label>
+  <input id="base" placeholder="https://예시.netlify.app/">
+  <div class="row">
+    <button id="make">QR 다시 만들기</button>
+    <button class="alt" onclick="window.print()">인쇄하기</button>
+  </div>
+  <p>선생님이 화면에서 추가한 부스도 여기에 함께 나와요. 부스 번호를 바꿔도 QR은 그대로 쓸 수 있어요.</p>
+</div>
+<div class="sheet" id="sheet"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="booths.js"></script>
+<script src="data.js"></script>
+<script>
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const baseIn = document.getElementById("base");
+baseIn.value = location.origin.startsWith("http") ? location.origin + location.pathname.replace(/qr\.html$/, "") : "";
+let list = HM.merged();
+function make() {
+  let base = baseIn.value.trim(); if (base && !base.endsWith("/")) base += "/";
+  const sheet = document.getElementById("sheet"); sheet.innerHTML = "";
+  const cards = [{ home: true, url: base, title: "충남 수학교육 한마당", sc: "전체 부스 학습지 · 일정 · 배치도" }]
+    .concat(list.map(b => ({ b, url: base + "#" + b.id })));
+  cards.forEach(c => {
+    const el = document.createElement("div"); el.className = "qrcard" + (c.home ? " home" : "");
+    el.innerHTML = c.home
+      ? `<span class="no">통합 홈페이지</span><h2>${c.title}</h2><div class="sc">${c.sc}</div><div class="qr"></div><div class="hint">휴대폰 카메라로 찍어 보세요</div><div class="url">${c.url}</div>`
+      : `<span class="no">부스 ${c.b.n}</span><h2>${esc(c.b.title)}</h2><div class="sc">${esc(c.b.school)}${c.b.club ? ' · ' + esc(c.b.club) : ''}</div><div class="qr"></div><div class="hint">QR을 찍으면 이 부스 학습지가 열려요</div><div class="url">${c.url}</div>`;
+    sheet.appendChild(el);
+    if (!window.QRCode) { el.querySelector(".qr").textContent = "QR을 만들려면 인터넷 연결이 필요해요."; return; }
+    new QRCode(el.querySelector(".qr"), { text: c.url || "https://example.com", width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+  });
+}
+document.getElementById("make").addEventListener("click", make);
+make();
+HM.load().then(l => { list = l; make(); });
+</script>
+</body>
+</html>

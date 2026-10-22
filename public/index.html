@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>충남 수학교육 한마당</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="2026 제15회 충남 수학교육 한마당 모바일 학습지">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* ===== 디자인 토큰 — 색·글꼴은 여기만 바꾸면 전체가 바뀝니다 =====
+   레이아웃: 리플렛처럼 하늘색 띠 위의 흰 종이 카드, 가운데 한 줄 */
+:root {
+  --sky: #8ED3F3;        /* 리플렛 배경 하늘색 */
+  --sky-soft: #E8F6FD;
+  --navy: #173F7A;       /* '충남 수학교육 한마당' 남색 */
+  --blue: #1A8ACB;       /* 버튼·강조 */
+  --ink: #1B2A3E;        /* 본문 글자 */
+  --muted: #5D6E85;
+  --line: #D5E5EF;
+  --paper: #F3F8FB;      /* 페이지 바탕 */
+  --card: #FFFFFF;
+  --warm: #EE6F2D;       /* 편집 모드 주황 */
+  --ok: #2E9A55;  --ok-soft: #E5F5EA;
+  --no: #D2493F;  --no-soft: #FCEBE9;
+  /* 모든 기기에서 똑같이 보이도록 구글 글꼴(Noto Sans KR) 하나로 통일 */
+  --font: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --r: 14px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font); font-weight: 400;
+  font-size: 17px; line-height: 1.65; word-break: keep-all; overflow-wrap: break-word; -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--card); }
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.wrap { max-width: 680px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+b, strong { font-weight: 700; }
+
+/* ---------- 헤더 (리플렛 표지) ---------- */
+.hero { background: linear-gradient(180deg, var(--sky) 0%, var(--sky-soft) 100%); }
+.hero .wrap { padding-block: 14px 16px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 12px; }
+.slogan { width: 112px; grid-column: 2; grid-row: 1 / span 2; align-self: start; }
+.badge { justify-self: start; font-weight: 700; background: var(--blue); color: #fff; border-radius: 999px; padding: 1px 12px; font-size: .82rem; }
+.title { font-weight: 900; color: var(--navy); font-size: clamp(1.7rem, 7.6vw, 2.5rem); line-height: 1.18; letter-spacing: -0.03em; }
+.meta { grid-column: 1 / -1; color: var(--navy); font-weight: 500; font-size: .88rem; }
+.now { grid-column: 1 / -1; margin-top: 6px; background: var(--navy); color: #fff; border-radius: var(--r); padding: 12px 14px; display: grid; gap: 4px; }
+.now .lab { display: flex; align-items: center; gap: 8px; font-size: .78rem; font-weight: 700; color: var(--sky); letter-spacing: .04em; }
+.now .lab i { width: 8px; height: 8px; border-radius: 50%; background: #FFB27A; }
+.now b { font-size: 1.1rem; }
+.now p { margin: 0; font-size: .9rem; color: #D6EAF7; }
+.now .stage { margin-top: 4px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.18); color: #FFE2CC; font-weight: 500; font-size: .9rem; }
+.meta span { white-space: nowrap; }
+
+/* ---------- 편집 모드 띠 ---------- */
+.adminbar { background: var(--warm); color: #fff; }
+.adminbar .wrap { padding-block: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: .9rem; font-weight: 700; }
+.adminbar button { background: #fff; color: var(--warm); border: 0; border-radius: 8px; padding: 4px 10px; font-weight: 700; font-size: .85rem; }
+
+/* ---------- 탭 ---------- */
+.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--card); border-bottom: 1px solid var(--line); }
+.tabs .wrap { display: grid; grid-template-columns: repeat(2, 1fr); }
+.tab { border: 0; background: none; padding: 13px 4px 11px; font-weight: 500; color: var(--muted); border-bottom: 3px solid transparent; font-size: 1rem; }
+.tab[aria-selected="true"] { color: var(--navy); border-bottom-color: var(--blue); font-weight: 700; }
+
+main { padding-block: 16px 28px; }
+.view { display: grid; gap: 14px; }
+
+/* ---------- 부스 목록 ---------- */
+.search { width: 100%; border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--card); font-size: 1rem; }
+.search:focus { border-color: var(--blue); outline: none; }
+.chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.chip { flex: none; border: 1.5px solid var(--line); background: var(--card); color: var(--muted); border-radius: 999px; padding: 6px 14px; font-weight: 500; font-size: .9rem; }
+.chip[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+.list { display: grid; gap: 8px; }
+.row { display: grid; grid-template-columns: 46px 1fr auto; gap: 12px; align-items: center; text-align: left; width: 100%;
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; text-decoration: none; color: inherit; }
+.row:hover { border-color: var(--blue); }
+.num { width: 46px; height: 46px; border-radius: 12px; background: var(--sky-soft); color: var(--navy); display: grid; place-items: center;
+  font-weight: 900; font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+.row .t { font-weight: 700; line-height: 1.45; }
+.row .s { color: var(--muted); font-size: .85rem; margin-top: 2px; }
+.pill { font-size: .75rem; font-weight: 700; border-radius: 999px; padding: 3px 9px; white-space: nowrap; background: var(--sky-soft); color: var(--blue); }
+.pill.warm { background: #FFEBDD; color: #B44C12; }
+.empty { text-align: center; color: var(--muted); padding: 24px 0; }
+.addbtn { border: 2px dashed var(--warm); color: var(--warm); background: #FFF8F3; border-radius: var(--r); padding: 14px; font-weight: 700; }
+
+/* ---------- 카드·표 ---------- */
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: grid; gap: 10px; min-width: 0; }
+.card h2 { font-weight: 700; color: var(--navy); font-size: 1.12rem; }
+.card p { margin: 0; }
+.tablewrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+th { background: var(--navy); color: #fff; font-weight: 700; padding: 8px; }
+td { border-bottom: 1px solid var(--line); padding: 9px 8px; vertical-align: top; }
+td.time { white-space: pre-line; font-variant-numeric: tabular-nums; color: var(--navy); font-weight: 500; width: 34%; }
+td.grp { background: var(--sky-soft); color: var(--navy); font-weight: 700; text-align: center; width: 18%; }
+.speclist { display: grid; gap: 10px; }
+.spec { border-top: 1px solid var(--line); padding-top: 10px; display: grid; gap: 2px; }
+.spec:first-child { border-top: 0; padding-top: 0; }
+.spec b { color: var(--navy); }
+.spec small { color: var(--blue); font-weight: 500; font-size: .84rem; }
+.spec p { font-size: .94rem; }
+ul.plain, ol.steps { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+
+/* ---------- 배치도 ---------- */
+.mapbox { overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 8px; }
+.mapbox svg { display: block; width: 100%; min-width: 520px; height: auto; }
+.mapbox.fit { border: 0; padding: 0; }
+.mapbox.fit svg { min-width: 0; }
+.map text { font-family: var(--font); font-weight: 700; pointer-events: none; }
+.map .b rect { fill: #FFF3D6; stroke: #E5C98A; }
+.map .b text { fill: #6B5320; font-size: 12px; }
+.map .b.here rect { fill: var(--warm); stroke: var(--warm); }
+.map .b.here text { fill: #fff; }
+.map .a rect { fill: var(--sky-soft); stroke: #B7DCEF; }
+.map .a.special rect { fill: #FBD9DE; stroke: #EDB1BA; }
+.map .a.stage rect { fill: #DDF1D5; stroke: #B5DCA6; }
+.map .a.door rect { fill: #FFE15A; stroke: #E0C02C; }
+.map .a text { fill: var(--navy); font-size: 9px; }
+.map .click { cursor: pointer; }
+.legend { color: var(--muted); font-size: .86rem; margin: 0; }
+.mapcard { padding: 14px 14px 10px; gap: 8px; }
+.mapcard .head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.mapcard > * { min-width: 0; }
+.mapcard .mapbox { border: 0; padding: 0; }
+.mapcard .mapbox svg { min-width: 0; }
+.ghost { border: 1px solid var(--line); background: var(--card); color: var(--navy); border-radius: 8px; padding: 3px 10px; font-size: .84rem; font-weight: 500; }
+.sign .goal { margin: 4px 0 0; color: #E3F1FA; font-size: .95rem; line-height: 1.55; }
+details.principle { padding: 0; }
+details.principle summary { list-style: none; cursor: pointer; padding: 14px 16px; font-weight: 700; color: var(--blue); display: flex; justify-content: space-between; gap: 8px; }
+details.principle summary::-webkit-details-marker { display: none; }
+details.principle summary::after { content: "펼치기"; font-size: .82rem; font-weight: 500; color: var(--muted); }
+details.principle[open] summary::after { content: "접기"; }
+details.principle ul { padding: 0 16px 16px 2.2em; }
+
+/* ---------- 부스 학습지 ---------- */
+.topnav { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.back { border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 7px 12px; font-weight: 700; color: var(--navy); font-size: .9rem; text-decoration: none; }
+.saved { color: var(--muted); font-size: .8rem; }
+.sign { background: var(--navy); color: #fff; border-radius: var(--r); padding: 18px 16px; display: grid; gap: 8px; }
+.sign .no { font-weight: 900; color: var(--sky); font-size: .95rem; letter-spacing: .06em; }
+.sign h1 { font-weight: 700; font-size: 1.42rem; line-height: 1.35; }
+.sign .who { color: #CFE6F5; font-size: .92rem; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tags span { background: rgba(255,255,255,.14); border-radius: 999px; padding: 2px 10px; font-size: .8rem; }
+.notice { background: #FFF5E6; border: 1px solid #F3D3A6; color: #7A4A0E; border-radius: 12px; padding: 10px 12px; font-size: .92rem; }
+.principle { background: var(--sky-soft); border: 1px solid #C2E3F4; }
+.principle h2 { color: var(--blue); }
+.linkbtn { display: block; text-align: center; background: var(--card); border: 1.5px solid var(--navy); color: var(--navy); border-radius: 12px; padding: 11px; font-weight: 700; text-decoration: none; }
+
+.sec { display: grid; gap: 10px; }
+.sec > h3 { font-weight: 700; color: var(--navy); font-size: 1.04rem; padding-top: 6px; }
+.sec .note { color: var(--muted); font-size: .9rem; margin: 0; }
+.q { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: grid; gap: 10px; min-width: 0; }
+.qh { display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: start; }
+.qn { background: var(--blue); color: #fff; font-weight: 700; font-size: .78rem; border-radius: 6px; padding: 1px 7px; margin-top: 3px; font-variant-numeric: tabular-nums; }
+.qt { font-weight: 500; }
+textarea.ans { width: 100%; min-height: 48px; border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 12px; resize: vertical; background: #FCFEFF; line-height: 1.5; }
+textarea.ans:focus { border-color: var(--blue); outline: none; }
+.opts { display: grid; gap: 6px; }
+.opt { text-align: left; border: 1.5px solid var(--line); background: var(--card); border-radius: 10px; padding: 10px 12px; font-weight: 500; }
+.opt[aria-pressed="true"] { border-color: var(--navy); background: var(--sky-soft); color: var(--navy); }
+.opt.right { border-color: var(--ok); background: var(--ok-soft); color: #1E6B3A; }
+.opt.wrong { border-color: var(--no); background: var(--no-soft); color: #9B2C24; }
+.fb { font-size: .9rem; font-weight: 700; margin: 0; }
+.fb.ok { color: var(--ok); } .fb.no { color: var(--no); }
+.reveal { justify-self: start; border: 0; background: none; color: var(--blue); font-weight: 700; font-size: .88rem; padding: 0; }
+.model { background: var(--ok-soft); border-radius: 10px; padding: 10px 12px; font-size: .94rem; color: #1E5B34; }
+.model b { margin-right: 6px; }
+canvas.pad { width: 100%; height: 220px; background: #FCFEFF; border: 1.5px dashed #9FCBE3; border-radius: 10px; touch-action: none; display: block; }
+.tool { justify-self: end; border: 1px solid var(--line); background: var(--card); border-radius: 8px; padding: 5px 12px; font-size: .85rem; font-weight: 500; }
+
+/* 마법카드 · 몬티홀 */
+.mcard { border: 1.5px solid var(--line); border-radius: 10px; padding: 8px 10px; display: grid; gap: 4px; background: var(--card); text-align: left; }
+.mcard[aria-pressed="true"] { border-color: var(--warm); background: #FFF1E8; }
+.mcard .nums { font-size: .8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.mcard .lab { font-weight: 700; color: var(--navy); }
+.bigres { font-weight: 900; color: var(--warm); font-size: 1.25rem; text-align: center; }
+.doors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.door { aspect-ratio: 3 / 4; max-width: 100%; border: 2px solid var(--navy); border-radius: 10px 10px 4px 4px; background: #E9F3FA; font-weight: 900; color: var(--navy); font-size: 1.1rem; }
+.door.pick { background: var(--sky); }
+.door.open { background: #EEE; color: var(--muted); border-color: #BBB; }
+.door.car { background: #FFE49B; border-color: var(--warm); color: #8A4B10; }
+.btnrow { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn { border: 0; background: var(--navy); color: #fff; border-radius: 10px; padding: 10px 16px; font-weight: 700; }
+.btn.alt { background: var(--card); color: var(--navy); border: 1.5px solid var(--navy); }
+.btn.warm { background: var(--warm); }
+.btn.danger { background: var(--card); color: var(--no); border: 1.5px solid var(--no); }
+.btn:disabled { opacity: .5; }
+.stats { font-size: .9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pager a { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; text-decoration: none; color: var(--navy); font-size: .88rem; font-weight: 500; min-width: 0; }
+.pager a:last-child { text-align: right; }
+.pager small { display: block; color: var(--muted); }
+
+/* ---------- 편집 ---------- */
+.adminbox { border: 2px solid var(--warm); background: #FFF8F3; }
+.adminbox h2 { color: #B44C12; }
+.ed { display: grid; gap: 14px; }
+.field { display: grid; gap: 4px; min-width: 0; }
+.field > span { font-weight: 700; font-size: .9rem; color: var(--navy); }
+.field small { color: var(--muted); font-size: .8rem; }
+.field input, .field textarea, .field select { width: 100%; border: 1.5px solid var(--line); border-radius: 10px; padding: 9px 11px; background: var(--card); }
+.field textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
+.field input:focus, .field textarea:focus, .field select:focus { border-color: var(--blue); outline: none; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 420px) { .two { grid-template-columns: 1fr; } }
+.edsec { border: 1.5px solid #9FCBE3; border-radius: var(--r); padding: 14px; display: grid; gap: 12px; background: var(--sky-soft); }
+.edq { border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 10px; background: var(--card); }
+.edhead { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.edhead b { color: var(--navy); }
+.mini { display: flex; gap: 4px; }
+.mini button { border: 1px solid var(--line); background: var(--card); border-radius: 8px; padding: 3px 9px; font-size: .82rem; font-weight: 500; }
+.mini button.del { color: var(--no); border-color: #F0C3BF; }
+.plus { border: 1.5px dashed var(--blue); background: var(--card); color: var(--blue); border-radius: 10px; padding: 9px; font-weight: 700; }
+.edfoot { position: sticky; bottom: 0; background: var(--paper); padding-block: 10px calc(10px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 8px; border-top: 1px solid var(--line); }
+.err { color: var(--no); font-weight: 700; font-size: .9rem; margin: 0; }
+.okmsg { color: var(--ok); font-weight: 700; font-size: .9rem; margin: 0; }
+
+/* 비밀번호 창 */
+.modal { position: fixed; inset: 0; background: rgba(18, 35, 60, .55); display: grid; place-items: center; z-index: 50;
+  padding: 16px max(16px, env(safe-area-inset-right, 0px)) 16px max(16px, env(safe-area-inset-left, 0px)); }
+.modal .card { width: 100%; max-width: 380px; }
+.modal input { width: 100%; border: 1.5px solid var(--line); border-radius: 10px; padding: 11px 12px; font-size: 1.15rem; letter-spacing: .3em; text-align: center; }
+
+/* ---------- 푸터 ---------- */
+footer { background: var(--card); border-top: 1px solid var(--line); }
+footer .wrap { padding-block: 18px calc(18px + env(safe-area-inset-bottom, 0px)); display: grid; justify-items: center; gap: 10px; }
+footer img { width: 200px; }
+.footlinks { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+.footlinks a, .footlinks button { color: var(--muted); font-size: .8rem; background: none; border: 0; padding: 0; text-decoration: underline; }
+
+body.booth-mode .hero { display: none; }
+@media (prefers-reduced-motion: no-preference) { .opt, .row, .chip { transition: border-color .12s, background .12s; } }
+</style>
+</head>
+<body>
+
+<div class="adminbar" id="adminbar" hidden>
+  <div class="wrap"><span id="adminText">편집 모드</span><button id="logout">편집 끝내기</button></div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <img class="slogan" src="img/slogan.png" alt="행복한 학교 학생중심 충남교육">
+    <div class="badge" id="edition">2026 제15회</div>
+    <h1 class="title">충남 수학교육<br>한마당</h1>
+    <div class="meta" id="eventMeta"></div>
+    <div class="now" id="now" aria-live="polite"></div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="메뉴">
+  <div class="wrap" role="tablist">
+    <button class="tab" role="tab" id="t-booths" data-go="">부스 찾기</button>
+    <button class="tab" role="tab" id="t-info" data-go="info">일정·안내</button>
+  </div>
+</nav>
+
+<main class="wrap" id="app"></main>
+
+<footer>
+  <div class="wrap">
+    <img src="img/cne-logo.png" alt="충청남도교육청">
+    <div class="footlinks">
+      <button id="loginBtn">부스 담당 선생님 (학습지 수정)</button>
+      <a href="qr.html" id="qrLink">부스 QR 인쇄</a>
+    </div>
+  </div>
+</footer>
+
+<div class="modal" id="loginModal" hidden>
+  <form class="card" id="loginForm">
+    <h2>부스 담당 선생님</h2>
+    <p>비밀번호를 넣으면 부스 학습지를 수정·교체·추가·삭제할 수 있어요.</p>
+    <input id="pw" type="password" inputmode="numeric" autocomplete="off" aria-label="비밀번호" placeholder="비밀번호">
+    <p class="err" id="pwErr"></p>
+    <div class="btnrow"><button class="btn" type="submit">들어가기</button><button class="btn alt" type="button" id="pwCancel">닫기</button></div>
+  </form>
+</div>
+
+<script src="booths.js"></script>
+<script src="data.js"></script>
+<script>
+/* ================= 공통 ================= */
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const pad2 = (n) => String(n).padStart(2, "0");
+const LEVEL = { "초": "초등", "중": "중등", "고": "고등" };
+const TYPES = { text: "서술형", choice: "객관식", draw: "그리기", magic: "마법카드 체험", monty: "몬티홀 실험" };
+let LIST = HM.merged();
+let byId = {};
+const reindex = () => { byId = Object.fromEntries(LIST.map(b => [b.id, b])); };
+reindex();
+
+const answers = (id) => HM.local.get("ans:" + id, {});
+const hasWork = (id) => Object.values(answers(id)).some(v => v !== "" && v != null);
+const isAdmin = () => !!HM.ses.get("pw");
+
+document.getElementById("edition").textContent = EVENT.edition;
+/* '지금' 안내 */
+const toMin = (t) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
+function kstNow() {
+  const q = new URLSearchParams(location.search).get("now");     // 시험용: ?now=2026-10-30T11:05
+  const d = q ? new Date(q + ":00+09:00") : new Date();
+  const k = new Date(d.getTime() + 9 * 3600e3);
+  return { d, ymd: k.toISOString().slice(0, 10), min: k.getUTCHours() * 60 + k.getUTCMinutes() };
+}
+function renderNow() {
+  const { d, ymd, min } = kstNow();
+  let lab = "지금", main = "", text = "", stage = "";
+  if (ymd < EVENT_DAY) {
+    const days = Math.ceil((new Date(EVENT_DAY + "T00:00:00+09:00") - d) / 864e5);
+    lab = "행사까지"; main = `D-${days} · 10월 30일(금) 10:00 시작`;
+    text = "미리 배치도와 부스 목록을 둘러보세요.";
+  } else if (ymd > EVENT_DAY || min >= toMin(NOW_PLAN[NOW_PLAN.length - 1].to)) {
+    lab = "행사 종료"; main = "함께해 줘서 고마워요!"; text = "'내가 쓴 곳'에서 오늘 푼 학습지를 다시 볼 수 있어요.";
+  } else {
+    const slot = NOW_PLAN.find(p => min >= toMin(p.from) && min < toMin(p.to)) || NOW_PLAN[0];
+    main = `${slot.title} (${slot.from}~${slot.to})`; text = slot.text;
+    const on = STAGE_PLAN.find(p => min >= toMin(p.from) && min < toMin(p.to));
+    const soon = STAGE_PLAN.find(p => toMin(p.from) > min && toMin(p.from) - min <= 30);
+    if (on) stage = `지금 ${on.where}: ${on.title} (${on.to}까지)`;
+    else if (soon) stage = `${toMin(soon.from) - min}분 뒤 ${soon.where}: ${soon.title} (${soon.from})`;
+  }
+  document.getElementById("now").innerHTML = `<span class="lab"><i></i>${esc(lab)}</span><b>${esc(main)}</b><p>${esc(text)}</p>${stage ? `<div class="stage">${esc(stage)}</div>` : ""}`;
+}
+renderNow(); setInterval(renderNow, 60000);
+document.getElementById("eventMeta").innerHTML = `<span>${esc(EVENT.date)}</span> · <span>${esc(EVENT.place)}</span>`;
+
+/* ================= 라우팅 =================
+   #부스id  학습지 / #info 일정 / #map 배치도 / #edit-부스id 수정 / #new 새 부스 */
+const app = document.getElementById("app");
+let filter = HM.local.get("filter", "all");
+let query = "";
+
+function route() {
+  const qp = new URLSearchParams(location.search).get("b");
+  if (qp && !location.hash) history.replaceState(null, "", location.pathname + "#" + qp);
+  const h = decodeURIComponent(location.hash.replace(/^#\/?/, ""));
+  const editId = h.startsWith("edit-") ? h.slice(5) : null;
+  const inBooth = !!byId[h] || !!editId || h === "new";
+  const tabFor = inBooth ? null : (h === "info" ? h : "");
+  document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.go === tabFor)));
+  document.body.classList.toggle("booth-mode", inBooth);
+  document.getElementById("adminbar").hidden = !isAdmin();
+  document.getElementById("adminText").textContent = HM.mode === "local"
+    ? "편집 모드 · 미리보기라 이 기기에만 저장돼요" : "편집 모드 · 저장하면 모든 학생 화면에 바로 반영돼요";
+  document.getElementById("loginBtn").hidden = isAdmin();
+  if (!byId[h] && !editId && h !== "new") document.title = "충남 수학교육 한마당";
+
+  if ((editId || h === "new") && !isAdmin()) { openLogin(); location.hash = editId || ""; return; }
+  if (editId && byId[editId]) return renderEditor(HM.clone(byId[editId]), false);
+  if (h === "new") return renderEditor(blankBooth(), true);
+  if (byId[h]) return renderBooth(byId[h]);
+  if (h === "info") return renderInfo();
+  renderList();
+  if (h === "map") setTimeout(() => document.getElementById("mapcard")?.scrollIntoView({ block: "start" }), 30);
+}
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
+  if (location.hash.replace("#", "") === t.dataset.go) route(); else location.hash = t.dataset.go;
+}));
+window.addEventListener("hashchange", () => { route(); window.scrollTo(0, 0); });
+
+/* ================= 부스 목록 ================= */
+function renderList() {
+  const chips = [["all", `전체 ${LIST.length}`], ["초", "초등 운영"], ["중", "중등 운영"], ["고", "고등 운영"], ["mine", "내가 쓴 곳"]];
+  const mapOpen = HM.local.get("mapOpen", true);
+  app.innerHTML = `
+    <div class="view">
+      ${isAdmin() ? `<button class="addbtn" id="addBooth">+ 새 부스 추가</button>` : ""}
+      <section class="card mapcard" id="mapcard">
+        <div class="head"><h2>행사장 배치도</h2><button class="ghost" id="mapToggle">${mapOpen ? "접기" : "펼치기"}</button></div>
+        <div id="mapBody" ${mapOpen ? "" : "hidden"}>
+          <p class="legend">부스 번호를 누르면 학습지가 열려요. 분홍색 칸은 특별 체험이에요.</p>
+          <div class="mapbox">${mapSVG(null)}</div>
+        </div>
+      </section>
+      <input class="search" id="q" type="search" placeholder="번호, 학교, 주제로 찾기 (예: 17, 금산중, 확률)" value="${esc(query)}" aria-label="부스 찾기">
+      <div class="chips">${chips.map(([k, l]) => `<button class="chip" data-f="${k}" aria-pressed="${filter === k}">${l}</button>`).join("")}</div>
+      <div class="list" id="list"></div>
+    </div>`;
+  document.getElementById("addBooth")?.addEventListener("click", () => location.hash = "new");
+  document.getElementById("mapToggle").addEventListener("click", () => {
+    const body = document.getElementById("mapBody"); body.hidden = !body.hidden;
+    HM.local.set("mapOpen", !body.hidden); document.getElementById("mapToggle").textContent = body.hidden ? "펼치기" : "접기";
+  });
+  bindMap(app);
+  const q = document.getElementById("q");
+  q.addEventListener("input", () => { query = q.value; drawRows(); });
+  app.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => {
+    filter = c.dataset.f; HM.local.set("filter", filter);
+    app.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", String(x === c)));
+    drawRows();
+  }));
+  drawRows();
+}
+function drawRows() {
+  const qq = query.trim().toLowerCase();
+  const rows = LIST.filter(b => {
+    if (["초", "중", "고"].includes(filter) && b.level !== filter) return false;
+    if (filter === "mine" && !hasWork(b.id)) return false;
+    if (!qq) return true;
+    return `${b.n} ${pad2(b.n)} ${b.title} ${b.school} ${b.club}`.toLowerCase().includes(qq);
+  });
+  document.getElementById("list").innerHTML = rows.length ? rows.map(b => {
+    let st = hasWork(b.id) ? `<span class="pill">작성 중</span>` : "";
+    if (isAdmin() && b.edited) st = `<span class="pill warm">${b.isNew ? "새 부스" : "수정됨"}</span>`;
+    return `<a class="row" href="#${esc(b.id)}">
+      <span class="num">${esc(b.n)}</span>
+      <span style="min-width:0"><div class="t">${esc(b.title)}</div><div class="s">${esc(b.school)}${b.club ? " · " + esc(b.club) : ""}</div></span>
+      ${st}</a>`;
+  }).join("") : `<p class="empty">찾는 부스가 없어요. 다른 낱말로 찾아보세요.</p>`;
+}
+
+/* ================= 일정·안내 ================= */
+function renderInfo() {
+  app.innerHTML = `
+  <div class="view">
+    <section class="card">
+      <h2>행사 개요</h2>
+      <div class="tablewrap"><table><tbody>
+        <tr><td class="grp">일시</td><td>${esc(EVENT.date)}</td></tr>
+        <tr><td class="grp">장소</td><td>${esc(EVENT.place)}<br><span style="color:var(--muted);font-size:.88rem">${esc(EVENT.address)}</span></td></tr>
+      </tbody></table></div>
+    </section>
+    <section class="card">
+      <h2>일정 안내</h2>
+      <div class="tablewrap"><table>
+        <thead><tr><th>구분</th><th>시간</th><th>주요 내용</th></tr></thead>
+        <tbody>${SCHEDULE.map(g => g.rows.map((r, i) =>
+          `<tr>${i === 0 ? `<td class="grp" rowspan="${g.rows.length}">${esc(g.group).replace("체험", "<br>체험")}</td>` : ""}<td class="time">${esc(r[0])}</td><td>${esc(r[1])}</td></tr>`).join("")).join("")}</tbody>
+      </table></div>
+    </section>
+    <section class="card">
+      <h2>이렇게 참여해요</h2>
+      <ul class="plain">${GUIDE.map(g => `<li>${esc(g)}</li>`).join("")}</ul>
+    </section>
+    <section class="card">
+      <h2>특별 체험</h2>
+      <div class="speclist">${SPECIALS.map(s => `<div class="spec" id="sp-${s.key}"><b>${esc(s.name)}</b><small>${esc(s.when)} · ${esc(s.where)}</small><p>${esc(s.text)}</p></div>`).join("")}</div>
+    </section>
+  </div>`;
+}
+
+/* ================= 배치도 ================= */
+function mapSVG(here) {
+  const C = 10, ox = 6;
+  const W = (MAP.cols + ox + 1) * C, H = (MAP.rows + 1) * C;
+  const X = (x) => (x - 1 + ox) * C, Y = (y) => (y - 1) * C;
+  let g = "";
+  MAP.areas.forEach(a => {
+    const vertical = a.kind === "stage" || a.kind === "door";
+    const cx = X(a.x) + a.w * C / 2, cy = Y(a.y) + a.h * C / 2;
+    const label = vertical ? a.label.split("").map((ch, i, arr) => `<tspan x="${cx}" dy="${i ? 10 : -(arr.length - 1) * 5}">${ch}</tspan>`).join("") : a.label;
+    g += `<g class="a ${a.kind} ${a.key ? "click" : ""}" ${a.key ? `data-sp="${a.key}"` : ""}><rect x="${X(a.x)}" y="${Y(a.y)}" width="${a.w * C}" height="${a.h * C}" rx="3"/>
+      <text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle">${label}</text></g>`;
+  });
+  LIST.forEach(b => {
+    const r = MAP.booth(Number(b.n)); if (!r) return;
+    const [x, y, w, h] = r;
+    g += `<g class="b click ${b.id === here ? "here" : ""}" data-b="${esc(b.id)}"><rect x="${X(x) + 1}" y="${Y(y) + 1}" width="${w * C - 2}" height="${h * C - 2}" rx="3"/>
+      <text x="${X(x) + w * C / 2}" y="${Y(y) + h * C / 2 + 1}" text-anchor="middle" dominant-baseline="middle">${esc(b.n)}</text></g>`;
+  });
+  return `<svg class="map" viewBox="0 0 ${W} ${H}" role="img" aria-label="행사장 배치도">${g}</svg>`;
+}
+function bindMap(root) {
+  root.querySelectorAll("[data-b]").forEach(el => el.addEventListener("click", () => location.hash = el.dataset.b));
+  root.querySelectorAll("[data-sp]").forEach(el => el.addEventListener("click", () => {
+    location.hash = "info";
+    setTimeout(() => document.getElementById("sp-" + el.dataset.sp)?.scrollIntoView({ block: "center" }), 60);
+  }));
+}
+function renderMap() {
+  app.innerHTML = `
+  <div class="view">
+    <section class="card">
+      <h2>행사장 배치도</h2>
+      <p class="legend">숫자는 부스 번호예요. 부스를 누르면 학습지로, 분홍색 칸을 누르면 특별 체험 안내로 이동해요.</p>
+    </section>
+    <div class="mapbox">${mapSVG(null)}</div>
+  </div>`;
+  bindMap(app);
+}
+
+/* ================= 부스 학습지 ================= */
+function renderBooth(b) {
+  const idx = LIST.findIndex(x => x.id === b.id);
+  const prev = LIST[idx - 1], next = LIST[idx + 1];
+  const ans = answers(b.id);
+  let qn = 0;
+  const sheet = b.sheet || [];
+  const sections = sheet.map((sec, si) => `
+    <section class="sec">
+      ${sec.h ? `<h3>${esc(sec.h)}</h3>` : ""}
+      ${sec.note ? `<p class="note">${esc(sec.note)}</p>` : ""}
+      ${(sec.qs || []).map((q, qi) => questionHTML(b, q, `${si}-${qi}`, (q.t === "magic" || q.t === "monty") ? null : ++qn, ans)).join("")}
+    </section>`).join("");
+  const link = /^https?:\/\//.test(b.link || "") ? b.link : "";
+
+  app.innerHTML = `
+  <div class="view">
+    <div class="topnav"><a class="back" href="#">← 전체 부스</a><span class="saved" id="saved">답은 이 휴대폰에 자동 저장돼요</span></div>
+    ${isAdmin() ? `<section class="card adminbox"><h2>부스 담당 선생님</h2>
+      <p>이 부스의 내용과 활동지를 고치거나, 통째로 바꾸거나, 지울 수 있어요.</p>
+      <div class="btnrow"><a class="btn warm" href="#edit-${esc(b.id)}" style="text-decoration:none">이 학습지 수정·교체</a></div></section>` : ""}
+    <section class="sign">
+      <div class="no">BOOTH ${esc(pad2(b.n))}</div>
+      <h1>${esc(b.title)}</h1>
+      <div class="who">${esc(b.school)}${b.club ? " · " + esc(b.club) : ""}</div>
+      <div class="tags">${b.level ? `<span>${LEVEL[b.level] || esc(b.level)} 운영</span>` : ""}<span>체험 10분 + 탐구 5분</span></div>
+      ${b.goal ? `<p class="goal">${esc(b.goal)}</p>` : ""}
+    </section>
+    ${b.pending ? `<div class="notice">이 부스의 학습지는 아직 준비 중이에요. 우선 아래 내용으로 체험해 보세요.</div>` : ""}
+    ${(b.doing || []).length ? `<section class="card"><h2>이렇게 체험해요</h2><ol class="steps">${b.doing.map(d => `<li>${esc(d)}</li>`).join("")}</ol></section>` : ""}
+    ${link ? `<a class="linkbtn" href="${esc(link)}" target="_blank" rel="noopener">원본 학습지 열어 보기</a>` : ""}
+    ${sections ? `<div class="sec"><h3 style="font-size:1.15rem">활동지</h3></div>${sections}` : ""}
+    ${(b.math || []).length ? `<details class="card principle"><summary>다 풀었다면? 숨은 수학 원리 보기</summary><ul class="plain">${b.math.map(m => `<li>${esc(m)}</li>`).join("")}</ul></details>` : ""}
+    <section class="card"><h2>부스 위치</h2><div class="mapbox fit">${mapSVG(b.id)}</div></section>
+    <nav class="pager">
+      ${prev ? `<a href="#${esc(prev.id)}"><small>← ${esc(prev.n)}번</small>${esc(prev.title)}</a>` : "<span></span>"}
+      ${next ? `<a href="#${esc(next.id)}"><small>${esc(next.n)}번 →</small>${esc(next.title)}</a>` : "<span></span>"}
+    </nav>
+  </div>`;
+  bindBooth(b);
+  bindMap(app);
+  document.title = `${b.n}. ${b.title} | 충남 수학교육 한마당`;
+}
+
+function questionHTML(b, q, key, num, ans) {
+  const head = num ? `<div class="qh"><span class="qn">${num}</span><div class="qt">${esc(q.q)}</div></div>` : "";
+  if (q.t === "choice") {
+    const pick = ans[key], has = typeof q.a === "number";
+    return `<div class="q" data-choice="${key}">${head}<div class="opts">${(q.o || []).map((o, i) => {
+      const cls = pick === i && has ? (i === q.a ? "right" : "wrong") : "";
+      return `<button class="opt ${cls}" data-i="${i}" aria-pressed="${pick === i}">${esc(o)}</button>`; }).join("")}</div>
+      <p class="fb ${pick !== undefined && has ? (pick === q.a ? "ok" : "no") : ""}" id="f-${key}">${pick !== undefined && has ? (pick === q.a ? "정답이에요!" : "다시 생각해 볼까요? 다른 답을 골라 보세요.") : ""}</p></div>`;
+  }
+  if (q.t === "draw") return `<div class="q">${head}<canvas class="pad" data-k="${key}" data-axis="${q.axis ? 1 : 0}"></canvas><button class="tool" data-clear="${key}">모두 지우기</button></div>`;
+  if (q.t === "magic") return magicHTML();
+  if (q.t === "monty") return montyHTML();
+  return `<div class="q">${head}
+      <textarea class="ans" id="a-${esc(b.id)}-${key}" data-k="${key}" rows="2" placeholder="${esc(q.ph || "여기에 답을 적어 보세요")}">${esc(ans[key] || "")}</textarea>
+      ${q.a ? `<button class="reveal" data-show="${key}">예시 답안 보기</button><div class="model" id="m-${key}" hidden><b>예시</b>${esc(q.a)}</div>` : ""}</div>`;
+}
+
+function saveAns(id, key, val) {
+  const a = answers(id); a[key] = val; HM.local.set("ans:" + id, a);
+  const s = document.getElementById("saved");
+  if (s) { s.textContent = "저장됨 ✓"; clearTimeout(saveAns.t); saveAns.t = setTimeout(() => s.textContent = "답은 이 휴대폰에 자동 저장돼요", 1500); }
+}
+
+function bindBooth(b) {
+  const findQ = (key) => { const [si, qi] = key.split("-").map(Number); return b.sheet[si].qs[qi]; };
+  app.querySelectorAll("textarea.ans").forEach(t => {
+    const fit = () => { t.style.height = "auto"; t.style.height = t.scrollHeight + 2 + "px"; };
+    fit(); t.addEventListener("input", () => { fit(); saveAns(b.id, t.dataset.k, t.value); });
+  });
+  app.querySelectorAll("[data-show]").forEach(btn => btn.addEventListener("click", () => {
+    const m = document.getElementById("m-" + btn.dataset.show); m.hidden = !m.hidden;
+    btn.textContent = m.hidden ? "예시 답안 보기" : "예시 답안 숨기기";
+  }));
+  app.querySelectorAll("[data-choice]").forEach(box => {
+    const key = box.dataset.choice, q = findQ(key);
+    box.querySelectorAll(".opt").forEach(btn => btn.addEventListener("click", () => {
+      const i = Number(btn.dataset.i); saveAns(b.id, key, i);
+      box.querySelectorAll(".opt").forEach(o => { o.setAttribute("aria-pressed", String(o === btn)); o.classList.remove("right", "wrong"); });
+      if (typeof q.a === "number") {
+        const fb = document.getElementById("f-" + key);
+        btn.classList.add(i === q.a ? "right" : "wrong");
+        fb.className = "fb " + (i === q.a ? "ok" : "no");
+        fb.textContent = i === q.a ? "정답이에요!" : "다시 생각해 볼까요? 다른 답을 골라 보세요.";
+      }
+    }));
+  });
+  app.querySelectorAll("canvas.pad").forEach(c => initPad(b, c));
+  app.querySelectorAll("[data-clear]").forEach(btn => btn.addEventListener("click", () => {
+    app.querySelector(`canvas[data-k="${btn.dataset.clear}"]`)._clear(); saveAns(b.id, btn.dataset.clear, "");
+  }));
+  if (app.querySelector(".mcard")) bindMagic();
+  if (app.querySelector(".doors")) bindMonty();
+}
+
+/* 손가락 그리기 칸 */
+function initPad(b, c) {
+  const key = c.dataset.k, ratio = window.devicePixelRatio || 1;
+  const w = c.clientWidth, h = c.clientHeight;
+  c.width = w * ratio; c.height = h * ratio;
+  const ctx = c.getContext("2d"); ctx.scale(ratio, ratio);
+  const guide = () => {
+    if (c.dataset.axis === "1") { ctx.save(); ctx.setLineDash([6, 6]); ctx.strokeStyle = "#E06A2C"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(w / 2, 6); ctx.lineTo(w / 2, h - 6); ctx.stroke(); ctx.restore(); }
+  };
+  c._clear = () => { ctx.clearRect(0, 0, w, h); guide(); };
+  guide();
+  const saved = answers(b.id)[key];
+  if (saved) { const img = new Image(); img.onload = () => ctx.drawImage(img, 0, 0, w, h); img.src = saved; }
+  ctx.strokeStyle = "#173F7A"; ctx.lineWidth = 3; ctx.lineCap = "round"; ctx.lineJoin = "round";
+  let on = false;
+  const p = (e) => { const r = c.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  c.addEventListener("pointerdown", e => { on = true; c.setPointerCapture(e.pointerId); ctx.beginPath(); ctx.moveTo(...p(e)); });
+  c.addEventListener("pointermove", e => { if (!on) return; ctx.lineTo(...p(e)); ctx.stroke(); });
+  const end = () => { if (!on) return; on = false; try { saveAns(b.id, key, c.toDataURL("image/png")); } catch (e) {} };
+  c.addEventListener("pointerup", end); c.addEventListener("pointercancel", end);
+}
+
+/* 마법카드 체험 */
+function magicHTML() {
+  const cards = [1, 2, 4, 8, 16].map((v, i) => {
+    const nums = []; for (let n = 1; n <= 31; n++) if (n & v) nums.push(n);
+    return `<button class="mcard" data-v="${v}" aria-pressed="false"><span class="lab">${"ABCDE"[i]} 카드 (첫 수 ${v})</span><span class="nums">${nums.join(" ")}</span></button>`;
+  }).join("");
+  return `<div class="q"><div class="qh"><span class="qn">체험</span><div class="qt">1~31 중 수 하나를 마음속으로 정하고, 그 수가 들어 있는 카드를 모두 눌러 보세요.</div></div>
+    ${cards}<div class="bigres" id="magicRes">카드를 눌러 보세요</div></div>`;
+}
+function bindMagic() {
+  const cards = app.querySelectorAll(".mcard"), res = document.getElementById("magicRes");
+  cards.forEach(c => c.addEventListener("click", () => {
+    c.setAttribute("aria-pressed", String(c.getAttribute("aria-pressed") !== "true"));
+    const on = [...cards].filter(x => x.getAttribute("aria-pressed") === "true").map(x => Number(x.dataset.v));
+    res.textContent = on.length ? `당신이 고른 수는 ${on.reduce((a, b) => a + b, 0)}! (${on.join(" + ")})` : "카드를 눌러 보세요";
+  }));
+}
+
+/* 몬티홀 실험기 */
+function montyHTML() {
+  return `<div class="q"><div class="qh"><span class="qn">실험</span><div class="qt">문 3개 중 1개 뒤에만 선물이 있어요. 문을 고르면 진행자가 꽝인 문 하나를 열어 줘요. 바꿀까요, 그대로 둘까요?</div></div>
+    <div class="doors">${[0, 1, 2].map(i => `<button class="door" data-d="${i}">${i + 1}</button>`).join("")}</div>
+    <p class="fb" id="montyMsg" style="color:var(--navy)">먼저 문 하나를 고르세요.</p>
+    <div class="btnrow" id="montyAct" hidden><button class="btn" data-m="switch">바꾸기</button><button class="btn alt" data-m="stay">그대로</button></div>
+    <div class="btnrow"><button class="btn alt" id="montyAuto">자동으로 1000번 실험</button></div>
+    <div class="stats" id="montyStats"></div></div>`;
+}
+function bindMonty() {
+  const st = HM.local.get("monty", { sw: [0, 0], stay: [0, 0] });
+  let car, pick, opened, phase = 0;
+  const doors = [...app.querySelectorAll(".door")], msg = document.getElementById("montyMsg"), act = document.getElementById("montyAct");
+  const stats = () => {
+    const r = (a) => a[1] ? `${a[0]}/${a[1]}번 성공 (${Math.round(a[0] / a[1] * 100)}%)` : "아직 없음";
+    document.getElementById("montyStats").innerHTML = `바꿨을 때: ${r(st.sw)}<br>그대로 뒀을 때: ${r(st.stay)}`;
+  };
+  const reset = () => { car = Math.floor(Math.random() * 3); phase = 0; doors.forEach(d => { d.className = "door"; d.disabled = false; d.textContent = Number(d.dataset.d) + 1; }); act.hidden = true; };
+  reset(); stats();
+  doors.forEach(d => d.addEventListener("click", () => {
+    if (phase === 2) { reset(); msg.textContent = "먼저 문 하나를 고르세요."; return; }
+    if (phase !== 0) return;
+    pick = Number(d.dataset.d); d.classList.add("pick");
+    const can = [0, 1, 2].filter(i => i !== pick && i !== car);
+    opened = can[Math.floor(Math.random() * can.length)];
+    doors[opened].classList.add("open"); doors[opened].textContent = "꽝"; doors[opened].disabled = true;
+    msg.textContent = `진행자가 ${opened + 1}번 문을 열었어요. 꽝! 선택을 바꿀까요?`; act.hidden = false; phase = 1;
+  }));
+  act.querySelectorAll("[data-m]").forEach(btn => btn.addEventListener("click", () => {
+    if (phase !== 1) return;
+    const sw = btn.dataset.m === "switch";
+    const final = sw ? [0, 1, 2].find(i => i !== pick && i !== opened) : pick;
+    const win = final === car, k = sw ? "sw" : "stay";
+    st[k][1]++; if (win) st[k][0]++; HM.local.set("monty", st);
+    doors.forEach((d, i) => { d.classList.remove("pick"); if (i === car) { d.classList.add("car"); d.textContent = "선물"; } else { d.classList.add("open"); d.textContent = "꽝"; } });
+    msg.textContent = (win ? "당첨! " : "아쉬워요. ") + "문을 누르면 다시 할 수 있어요."; act.hidden = true; phase = 2; stats();
+  }));
+  document.getElementById("montyAuto").addEventListener("click", () => {
+    for (let n = 0; n < 1000; n++) { const c = Math.floor(Math.random() * 3), p = Math.floor(Math.random() * 3), sw = n % 2 === 0;
+      const k = sw ? "sw" : "stay"; st[k][1]++; if (sw ? p !== c : p === c) st[k][0]++; }
+    HM.local.set("monty", st); stats();
+  });
+}
+
+/* ================= 선생님 로그인 ================= */
+const modal = document.getElementById("loginModal");
+function openLogin() { modal.hidden = false; document.getElementById("pwErr").textContent = ""; document.getElementById("pw").value = ""; setTimeout(() => document.getElementById("pw").focus(), 30); }
+document.getElementById("loginBtn").addEventListener("click", openLogin);
+document.getElementById("pwCancel").addEventListener("click", () => modal.hidden = true);
+document.getElementById("loginForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const pw = document.getElementById("pw").value.trim();
+  try { await HM.post({ action: "check", password: pw }); HM.ses.set("pw", pw); modal.hidden = true; route(); }
+  catch (err) { document.getElementById("pwErr").textContent = err.message; }
+});
+document.getElementById("logout").addEventListener("click", () => { HM.ses.set("pw", null); route(); });
+
+/* ================= 학습지 편집기 ================= */
+function blankBooth() {
+  const n = Math.max(0, ...LIST.map(b => Number(b.n) || 0)) + 1;
+  return { id: "b" + Date.now().toString(36), n, title: "", school: "", level: "중", club: "", goal: "", doing: [], math: [], link: "",
+    sheet: [{ h: "활동지", qs: [{ t: "text", q: "" }] }] };
+}
+let draft = null, draftIsNew = false;
+
+function renderEditor(b, isNew) {
+  draft = b; draftIsNew = isNew;
+  draft.sheet = draft.sheet || [];
+  const lines = (arr) => esc((arr || []).join("\n"));
+  const canReset = !isNew && HM.isDefault(b.id) && byId[b.id]?.edited;
+  app.innerHTML = `
+  <div class="view ed">
+    <div class="topnav"><a class="back" href="#${isNew ? "" : esc(b.id)}">← 취소하고 돌아가기</a></div>
+    <section class="card adminbox">
+      <h2>${isNew ? "새 부스 만들기" : `${esc(b.n)}번 부스 학습지 수정`}</h2>
+      <p>고친 뒤 맨 아래 <b>저장하기</b>를 눌러야 반영돼요. 여러 줄 칸은 한 줄에 하나씩 적어요.</p>
+    </section>
+
+    <section class="card">
+      <h2>부스 정보</h2>
+      <div class="two">
+        <label class="field"><span>부스 번호</span><input id="e-n" type="number" inputmode="numeric" data-f="n" value="${esc(b.n)}"><small>배치도 번호. 바꿔도 QR은 그대로 쓸 수 있어요.</small></label>
+        <label class="field"><span>운영 학교급</span><select id="e-level" data-f="level">${["초", "중", "고"].map(l => `<option value="${l}" ${b.level === l ? "selected" : ""}>${LEVEL[l]}</option>`).join("")}</select></label>
+      </div>
+      <label class="field"><span>부스 주제 (제목)</span><input id="e-title" data-f="title" value="${esc(b.title)}"></label>
+      <div class="two">
+        <label class="field"><span>학교</span><input id="e-school" data-f="school" value="${esc(b.school)}"></label>
+        <label class="field"><span>동아리</span><input id="e-club" data-f="club" value="${esc(b.club)}"></label>
+      </div>
+      <label class="field"><span>오늘의 목표</span><textarea id="e-goal" data-f="goal">${esc(b.goal)}</textarea></label>
+      <label class="field"><span>이렇게 체험해요</span><textarea id="e-doing" data-f="doing" data-lines="1">${lines(b.doing)}</textarea><small>순서대로 한 줄에 하나씩</small></label>
+      <label class="field"><span>숨은 수학 원리</span><textarea id="e-math" data-f="math" data-lines="1">${lines(b.math)}</textarea><small>한 줄에 하나씩</small></label>
+      <label class="field"><span>원본 학습지 링크 (선택)</span><input id="e-link" data-f="link" type="url" placeholder="https://drive.google.com/..." value="${esc(b.link || "")}"><small>구글 드라이브·PDF 주소를 넣으면 '원본 학습지 열어 보기' 버튼이 생겨요.</small></label>
+    </section>
+
+    <section class="card">
+      <h2>활동지</h2>
+      <p class="legend">소제목 묶음 안에 문항을 넣어요. 화살표로 순서를 바꿀 수 있어요.</p>
+      ${draft.sheet.map((sec, si) => sectionEd(sec, si)).join("")}
+      <button class="plus" data-act="addSec">+ 소제목 묶음 추가</button>
+    </section>
+
+    ${!isNew ? `<section class="card">
+      <h2>교체·삭제</h2>
+      <div class="btnrow">
+        <button class="btn alt" data-act="wipe">활동지 전부 비우고 새로 쓰기</button>
+        ${canReset ? `<button class="btn alt" data-act="reset">처음 내용(booths.js)으로 되돌리기</button>` : ""}
+        <button class="btn danger" data-act="delete">이 부스 삭제</button>
+      </div>
+      <p class="err" id="confirmMsg"></p>
+    </section>` : ""}
+
+    <div class="edfoot">
+      <p class="err" id="edErr"></p>
+      <div class="btnrow"><button class="btn warm" id="saveBtn" style="flex:1">저장하기</button><a class="btn alt" href="#${isNew ? "" : esc(b.id)}" style="text-decoration:none">취소</a></div>
+    </div>
+  </div>`;
+  bindEditor();
+}
+
+function sectionEd(sec, si) {
+  return `<div class="edsec">
+    <div class="edhead"><b>묶음 ${si + 1}</b><span class="mini">
+      <button data-act="secUp" data-s="${si}" aria-label="위로">↑</button><button data-act="secDown" data-s="${si}" aria-label="아래로">↓</button>
+      <button class="del" data-act="secDel" data-s="${si}">묶음 삭제</button></span></div>
+    <label class="field"><span>소제목</span><input id="s-${si}-h" data-s="${si}" data-sf="h" value="${esc(sec.h)}"></label>
+    <label class="field"><span>안내 문장 (선택)</span><input id="s-${si}-note" data-s="${si}" data-sf="note" value="${esc(sec.note || "")}"></label>
+    ${(sec.qs || []).map((q, qi) => questionEd(q, si, qi)).join("")}
+    <button class="plus" data-act="addQ" data-s="${si}">+ 문항 추가</button>
+  </div>`;
+}
+
+function questionEd(q, si, qi) {
+  const id = `q-${si}-${qi}`, d = `data-s="${si}" data-q="${qi}"`;
+  const special = q.t === "magic" || q.t === "monty";
+  let body = "";
+  if (special) body = `<p class="legend">${TYPES[q.t]} 도구가 들어가요. (내용은 고칠 수 없고 삭제만 할 수 있어요)</p>`;
+  else {
+    body = `<label class="field"><span>질문</span><textarea id="${id}-q" ${d} data-qf="q">${esc(q.q)}</textarea></label>`;
+    if (q.t === "choice") {
+      body += `<label class="field"><span>보기 (한 줄에 하나씩)</span><textarea id="${id}-o" ${d} data-qf="o">${esc((q.o || []).join("\n"))}</textarea></label>
+        <label class="field"><span>정답</span><select id="${id}-a" ${d} data-qf="a">${answerOpts(q)}</select><small>정답이 없는 질문(예: 내 선택 고르기)은 '정답 없음'</small></label>`;
+    } else if (q.t === "draw") {
+      body += `<label class="field" style="grid-template-columns:auto 1fr;align-items:center;gap:8px"><input id="${id}-axis" type="checkbox" ${d} data-qf="axis" ${q.axis ? "checked" : ""} style="width:auto"><span>가운데 대칭축 점선 보이기</span></label>`;
+    } else {
+      body += `<label class="field"><span>예시 답안 (선택)</span><textarea id="${id}-a" ${d} data-qf="a">${esc(q.a || "")}</textarea><small>적어 두면 학생이 '예시 답안 보기'로 확인할 수 있어요.</small></label>
+        <label class="field"><span>입력칸 안내 (선택)</span><input id="${id}-ph" ${d} data-qf="ph" value="${esc(q.ph || "")}" placeholder="예: 10 cm → 4 cm"></label>`;
+    }
+  }
+  return `<div class="edq">
+    <div class="edhead"><b>문항 ${qi + 1}</b>
+      ${special ? "" : `<select id="${id}-t" ${d} data-qf="t" aria-label="문항 종류" style="border:1.5px solid var(--line);border-radius:8px;padding:3px 6px">${["text", "choice", "draw"].map(t => `<option value="${t}" ${q.t === t || (!q.t && t === "text") ? "selected" : ""}>${TYPES[t]}</option>`).join("")}</select>`}
+      <span class="mini"><button data-act="qUp" ${d} aria-label="위로">↑</button><button data-act="qDown" ${d} aria-label="아래로">↓</button><button class="del" data-act="qDel" ${d}>삭제</button></span>
+    </div>${body}</div>`;
+}
+function answerOpts(q) {
+  const o = q.o || [];
+  return `<option value="">정답 없음</option>` + o.map((t, i) => `<option value="${i}" ${q.a === i ? "selected" : ""}>${i + 1}번: ${esc(t.slice(0, 30))}</option>`).join("");
+}
+
+function bindEditor() {
+  const ed = app.querySelector(".ed");
+  const rerender = () => { const y = window.scrollY; renderEditor(draft, draftIsNew); window.scrollTo(0, y); };
+  const grow = (t) => { t.style.height = "auto"; t.style.height = t.scrollHeight + 3 + "px"; };
+  ed.querySelectorAll(".field textarea").forEach(grow);
+  ed.addEventListener("input", e => { if (e.target.tagName === "TEXTAREA") grow(e.target); });
+  ed.addEventListener("input", e => {
+    const el = e.target;
+    if (el.dataset.f) {
+      const f = el.dataset.f;
+      draft[f] = el.dataset.lines ? el.value.split("\n").map(s => s.trim()).filter(Boolean) : (f === "n" ? Number(el.value) : el.value);
+    } else if (el.dataset.sf) {
+      draft.sheet[el.dataset.s][el.dataset.sf] = el.value;
+    } else if (el.dataset.qf) {
+      const q = draft.sheet[el.dataset.s].qs[el.dataset.q], f = el.dataset.qf;
+      if (f === "o") { q.o = el.value.split("\n").map(s => s.trim()).filter(Boolean); if (typeof q.a === "number" && q.a >= q.o.length) delete q.a;
+        const sel = document.getElementById(`q-${el.dataset.s}-${el.dataset.q}-a`); if (sel) sel.innerHTML = answerOpts(q); }
+      else if (f === "a" && q.t === "choice") { if (el.value === "") delete q.a; else q.a = Number(el.value); }
+      else if (f === "axis") q.axis = el.checked;
+      else if (f === "t") { q.t = el.value; if (q.t === "choice") { q.o = q.o || []; delete q.a; } else if (typeof q.a === "number") delete q.a; rerender(); }
+      else q[f] = el.value;
+    }
+  });
+
+  ed.addEventListener("click", async e => {
+    const btn = e.target.closest("[data-act]"); if (!btn) return;
+    const s = Number(btn.dataset.s), q = Number(btn.dataset.q), sh = draft.sheet;
+    const move = (arr, i, d) => { const j = i + d; if (j < 0 || j >= arr.length) return; [arr[i], arr[j]] = [arr[j], arr[i]]; };
+    switch (btn.dataset.act) {
+      case "addSec": sh.push({ h: "", qs: [{ t: "text", q: "" }] }); break;
+      case "secUp": move(sh, s, -1); break;
+      case "secDown": move(sh, s, 1); break;
+      case "secDel": sh.splice(s, 1); break;
+      case "addQ": sh[s].qs.push({ t: "text", q: "" }); break;
+      case "qUp": move(sh[s].qs, q, -1); break;
+      case "qDown": move(sh[s].qs, q, 1); break;
+      case "qDel": sh[s].qs.splice(q, 1); break;
+      case "wipe":
+        if (!confirmTwice(btn, "한 번 더 누르면 활동지가 비워져요. (저장 전까지는 되돌릴 수 있어요)")) return;
+        draft.sheet = [{ h: "활동지", qs: [{ t: "text", q: "" }] }]; break;
+      case "reset":
+        if (!confirmTwice(btn, "한 번 더 누르면 처음 내용으로 되돌아가요.")) return;
+        return doPost({ action: "reset", id: draft.id }, draft.id);
+      case "delete":
+        if (!confirmTwice(btn, "한 번 더 누르면 이 부스가 목록에서 사라져요.")) return;
+        return doPost({ action: "delete", id: draft.id }, "");
+      default: return;
+    }
+    rerender();
+  });
+  document.getElementById("saveBtn").addEventListener("click", () => {
+    if (!String(draft.title || "").trim()) { document.getElementById("edErr").textContent = "부스 주제(제목)를 입력해 주세요."; return; }
+    const clean = HM.clone(draft);
+    delete clean.edited; delete clean.isNew; delete clean.updatedAt;
+    clean.sheet = clean.sheet.map(sec => ({ ...sec, qs: (sec.qs || []).filter(q => q.t === "magic" || q.t === "monty" || String(q.q || "").trim()) }))
+      .filter(sec => sec.qs.length || String(sec.h || "").trim());
+    doPost({ action: "save", id: clean.id, booth: clean }, clean.id);
+  });
+}
+function confirmTwice(btn, msg) {
+  if (btn.dataset.armed) return true;
+  btn.dataset.armed = "1"; btn.textContent = "정말 할까요? 한 번 더 누르기";
+  document.getElementById("confirmMsg").textContent = msg;
+  return false;
+}
+async function doPost(payload, goTo) {
+  const err = document.getElementById("edErr"), sb = document.getElementById("saveBtn");
+  sb.disabled = true; err.className = "okmsg"; err.textContent = "저장하는 중…";
+  try {
+    await HM.post({ ...payload, password: HM.ses.get("pw") });
+    LIST = HM.merged(); reindex();
+    location.hash = goTo; if (location.hash.replace("#", "") === goTo) route();
+    window.scrollTo(0, 0);
+  } catch (e) {
+    sb.disabled = false; err.className = "err"; err.textContent = e.message;
+    if (/비밀번호/.test(e.message)) { HM.ses.set("pw", null); }
+  }
+}
+
+/* ================= 시작 ================= */
+route();
+HM.load().then(list => {
+  const changed = JSON.stringify(list) !== JSON.stringify(LIST);
+  LIST = list; reindex();
+  const h = location.hash;
+  if (h.startsWith("#edit-") || h === "#new") { document.getElementById("adminbar").hidden = !isAdmin(); return; }
+  const typing = document.activeElement && /TEXTAREA|INPUT/.test(document.activeElement.tagName);
+  if (changed && !typing) route(); else if (isAdmin()) document.getElementById("adminText").textContent =
+    HM.mode === "local" ? "편집 모드 · 미리보기라 이 기기에만 저장돼요" : "편집 모드 · 저장하면 모든 학생 화면에 바로 반영돼요";
+});
+</script>
+</body>
+</html>
