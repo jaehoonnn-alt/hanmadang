@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>부스 QR 인쇄 | 충남 수학교육 한마당</title>
+<script>
+  /* 이미 인쇄된 잘못된 QR(…/qr/#부스이름) 구제: 부스 이름이 붙어 오면 학습지로 바로 보내요 */
+  if (location.hash.length > 1) location.replace(location.origin + "/" + location.hash);
+</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap">
 <style>
 :root { --navy: #173F7A; --blue: #1A8ACB; --sky: #8ED3F3; --line: #D5E5EF; --ink: #1B2A3E; --muted: #5D6E85; }
@@ -73,7 +77,7 @@ button.alt { background: #fff; color: var(--navy); border: 1.5px solid var(--nav
 <script>
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const baseIn = document.getElementById("base");
-baseIn.value = location.origin.startsWith("http") ? location.origin + location.pathname.replace(/qr\.html$/, "") : "";
+baseIn.value = location.origin.startsWith("http") ? location.origin + "/" : "";  // 항상 사이트 첫 화면 기준
 let list = HM.merged();
 function make() {
   let base = baseIn.value.trim(); if (base && !base.endsWith("/")) base += "/";
