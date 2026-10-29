@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>지도교사 등록부 | 충남 수학교육 한마당</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* 메인 사이트와 같은 색. 레이아웃: 휴대폰 한 줄 서식, 관리 화면은 넓은 표 */
+:root {
+  --sky: #8ED3F3; --sky-soft: #E8F6FD; --navy: #173F7A; --blue: #1A8ACB;
+  --ink: #1B2A3E; --muted: #5D6E85; --line: #D5E5EF; --paper: #F3F8FB; --card: #FFFFFF;
+  --warm: #EE6F2D; --ok: #2E9A55; --ok-soft: #E5F5EA; --no: #D2493F; --no-soft: #FCEBE9;
+  --font: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; --r: 14px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font); font-size: 17px; line-height: 1.6; word-break: keep-all; overflow-wrap: break-word; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.wrap { max-width: 560px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wide { max-width: 1000px; }
+header { background: linear-gradient(180deg, var(--sky) 0%, var(--sky-soft) 100%); }
+header .wrap { padding-block: 16px 18px; display: grid; gap: 4px; }
+.badge { justify-self: start; background: var(--blue); color: #fff; font-weight: 700; font-size: .8rem; border-radius: 999px; padding: 1px 12px; }
+h1 { margin: 0; color: var(--navy); font-weight: 900; font-size: clamp(1.5rem, 6.5vw, 2rem); line-height: 1.25; letter-spacing: -0.02em; }
+header p { margin: 0; color: var(--navy); font-size: .9rem; }
+main { padding-block: 16px 40px; display: grid; gap: 14px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: grid; gap: 12px; min-width: 0; }
+.card h2 { margin: 0; color: var(--navy); font-size: 1.1rem; }
+.card p { margin: 0; }
+.muted { color: var(--muted); font-size: .9rem; }
+.field { display: grid; gap: 4px; }
+.field > span { font-weight: 700; color: var(--navy); font-size: .95rem; }
+.field small { color: var(--muted); font-size: .82rem; }
+.field input, .field select { width: 100%; border: 1.5px solid var(--line); border-radius: 10px; padding: 11px 12px; background: var(--card); font-size: 1.02rem; }
+.field input:focus, .field select:focus { border-color: var(--blue); outline: none; }
+.sigbox { position: relative; }
+canvas.sig { display: block; width: 100%; height: 200px; background: #FCFEFF; border: 2px dashed #9FCBE3; border-radius: 12px; touch-action: none; }
+.sigbox .ph { position: absolute; inset: 0; display: grid; place-items: center; color: #9DB3C6; pointer-events: none; font-weight: 500; }
+.sigbox .line { position: absolute; left: 8%; right: 8%; bottom: 46px; border-bottom: 1.5px solid #C9DCE8; pointer-events: none; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.btn { border: 0; background: var(--navy); color: #fff; border-radius: 12px; padding: 12px 18px; font-weight: 700; }
+.btn.big { width: 100%; padding: 15px; font-size: 1.08rem; }
+.btn.alt { background: var(--card); color: var(--navy); border: 1.5px solid var(--navy); }
+.btn.small { padding: 7px 12px; font-size: .88rem; border-radius: 9px; }
+.btn.danger { background: var(--card); color: var(--no); border: 1.5px solid var(--no); }
+.btn:disabled { opacity: .5; }
+.err { color: var(--no); font-weight: 700; margin: 0; }
+.done { text-align: center; justify-items: center; }
+.done .mark { width: 72px; height: 72px; border-radius: 50%; background: var(--ok-soft); color: var(--ok); display: grid; place-items: center; font-size: 2rem; font-weight: 900; }
+.footlink { margin: 4px 0 0; text-align: center; }
+.footlink a { color: var(--muted); font-size: .8rem; }
+.done img { max-width: 260px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+
+/* 관리 화면 */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.stat { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+.stat b { display: block; font-size: 1.6rem; color: var(--navy); font-weight: 900; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.stat span { color: var(--muted); font-size: .84rem; }
+.stat.warn b { color: var(--warm); }
+.tablewrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+th { background: var(--navy); color: #fff; font-weight: 700; padding: 8px; text-align: left; white-space: nowrap; }
+td { border-bottom: 1px solid var(--line); padding: 8px; vertical-align: middle; }
+td.num { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+td img { height: 46px; max-width: 150px; display: block; }
+.chip { display: inline-block; border-radius: 999px; padding: 1px 9px; font-size: .78rem; font-weight: 700; white-space: nowrap; }
+.chip.ok { background: var(--ok-soft); color: #1E6B3A; }
+.chip.no { background: #FFEBDD; color: #B44C12; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tab { border: 1.5px solid var(--line); background: var(--card); color: var(--muted); border-radius: 999px; padding: 6px 14px; font-weight: 500; font-size: .9rem; }
+.tab[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+.qr { justify-self: center; background: #fff; padding: 10px; }
+.qr img, .qr canvas { width: 220px; height: 220px; }
+
+/* 인쇄용 등록부 */
+#printSheet { display: none; }
+@media print {
+  @page { size: A4; margin: 14mm 12mm; }
+  body { background: #fff; font-size: 11pt; }
+  header, main { display: none !important; }
+  #printSheet { display: block; }
+  #printSheet h1 { font-size: 17pt; text-align: center; margin: 0 0 2mm; color: #000; }
+  #printSheet .sub { text-align: center; margin: 0 0 6mm; font-size: 10.5pt; }
+  #printSheet table { font-size: 10.5pt; }
+  #printSheet th { background: #E9EEF3; color: #000; border: 1px solid #555; text-align: center; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  #printSheet td { border: 1px solid #555; height: 15mm; padding: 1mm 2mm; }
+  #printSheet td img { height: 12mm; max-width: 45mm; margin: 0 auto; }
+  #printSheet tr { break-inside: avoid; page-break-inside: avoid; }
+  #printSheet .c { text-align: center; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap" id="headWrap">
+    <span class="badge">2026 제15회 충남 수학교육 한마당</span>
+    <h1 id="headTitle">지도교사 등록부</h1>
+    <p id="headSub">2026. 10. 30.(금) · 부여 국민체육센터</p>
+  </div>
+</header>
+
+<!-- ============ 선생님 등록 화면 ============ -->
+<main class="wrap" id="formView">
+  <form class="card" id="regForm" novalidate>
+    <h2>등록해 주세요</h2>
+    <p class="muted">학교와 성명을 적고, 아래 칸에 손가락으로 서명한 뒤 '등록하기'를 눌러 주세요.</p>
+    <label class="field"><span>학교명</span><input id="school" autocomplete="organization" placeholder="예: 백제초등학교" maxlength="60"></label>
+    <label class="field"><span>성명</span><input id="name" autocomplete="name" placeholder="예: 홍길동" maxlength="30"></label>
+    <label class="field"><span>담당 부스 (선택)</span><select id="booth"></select><small>운영하는 부스나 프로그램을 골라 주세요.</small></label>
+    <div class="field"><span>서명</span>
+      <div class="sigbox"><canvas class="sig" id="sig" aria-label="서명 칸"></canvas><div class="line"></div><div class="ph" id="sigPh">여기에 서명해 주세요</div></div>
+      <div class="row" style="justify-content:flex-end"><button class="btn alt small" type="button" id="sigClear">서명 지우기</button></div>
+    </div>
+    <p class="err" id="formErr"></p>
+    <button class="btn big" type="submit" id="submitBtn">등록하기</button>
+  </form>
+
+  <section class="card done" id="doneView" hidden>
+    <div class="mark">✓</div>
+    <h2>등록되었어요</h2>
+    <p id="doneText"></p>
+    <img id="doneSig" alt="제출한 서명">
+    <p class="muted">잘못 적었다면 다시 등록해 주세요. 관리 화면에서 마지막 등록을 확인할 수 있어요.</p>
+    <button class="btn alt" type="button" id="again">다른 선생님 등록하기</button>
+  </section>
+  <p class="footlink"><a href="#admin">등록부 확인</a></p>
+</main>
+
+<!-- ============ 관리 화면 (#admin) ============ -->
+<main class="wrap wide" id="adminView" hidden>
+  <form class="card" id="loginForm" style="max-width:420px">
+    <h2>관리 화면</h2>
+    <p class="muted">등록 목록과 서명은 비밀번호를 넣어야 볼 수 있어요.</p>
+    <label class="field"><span>비밀번호</span><input id="pw" type="password" autocomplete="off"></label>
+    <p class="err" id="pwErr"></p>
+    <button class="btn" type="submit">들어가기</button>
+  </form>
+
+  <div id="adminBody" hidden style="display:grid;gap:14px">
+    <div class="stats">
+      <div class="stat"><b id="sTotal">0</b><span>등록 인원</span></div>
+      <div class="stat"><b id="sDone">0</b><span>명단 중 등록 완료</span></div>
+      <div class="stat warn"><b id="sMiss">0</b><span>명단 중 미등록</span></div>
+    </div>
+    <div class="row">
+      <button class="btn" type="button" id="refresh">새로고침</button>
+      <button class="btn alt" type="button" id="csv">엑셀로 내려받기</button>
+      <button class="btn alt" type="button" id="print">등록부 인쇄</button>
+      <button class="btn alt" type="button" id="showQr">등록 화면 QR</button>
+      <button class="btn alt" type="button" id="logout">나가기</button>
+    </div>
+    <section class="card" id="qrCard" hidden>
+      <h2>등록 화면 QR</h2>
+      <p class="muted">선생님들께 이 QR을 보여 주거나 주소를 보내 주세요.</p>
+      <div class="qr" id="qrBox"></div>
+      <p class="muted" id="qrUrl" style="text-align:center;word-break:break-all"></p>
+    </section>
+    <div class="tabs">
+      <button class="tab" type="button" data-t="list" aria-pressed="true">등록 목록</button>
+      <button class="tab" type="button" data-t="check" aria-pressed="false">명단 대조</button>
+    </div>
+    <section class="card" id="listCard"><div class="tablewrap" id="listTable"></div></section>
+    <section class="card" id="checkCard" hidden>
+      <p class="muted">엑셀 '부스운영현황'의 지도교사 명단과 등록한 성명을 비교해요. 이름이 같으면 등록 완료로 표시돼요.</p>
+      <div class="tablewrap" id="checkTable"></div>
+    </section>
+  </div>
+</main>
+
+<div id="printSheet"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const API = "/api/register";
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const $ = (id) => document.getElementById(id);
+const norm = (s) => String(s || "").replace(/\s+/g, "");
+const fmt = (iso) => { const d = new Date(iso); const k = new Date(d.getTime() + 9 * 3600e3);
+  return `${k.getUTCMonth() + 1}/${k.getUTCDate()} ${String(k.getUTCHours()).padStart(2, "0")}:${String(k.getUTCMinutes()).padStart(2, "0")}`; };
+
+/* 담당 부스 목록 (리플렛·배치도 기준) */
+const BOOTH_OPTIONS = ["1번 · 백제초 · 사칙연산 컬링대회 (백제초를 이겨라!)","2번 · 홍주초 · 빛이나는 홀로그램 IQ 램프 만들기","3번 · 홍주초 · 캐스트퍼즐 해결하기","4번 · 천안동성중 · 수학으로 여는 비밀의 문","5번 · 공주중 · 대칭을 활용한 미로찾기","6번 · 봉황중 · 마이쮸실타래에서 찾아보는 거듭제곱","7번 · 이인중 · 생체모방 로봇손, 이차함수로 최적의 힘을 찾아라!","8번 · 공주북중 · 슈링클스로 굽는 너와 나의 닮음비!","9번 · 공주사대부중 · 매스 어드 벤처: 4개의 수학 열쇠","10번 · 온양용화중 · 디폼블럭 점·선대칭 팽이 만들기","11번 · 아산배방중 · 이진법으로 마음을 읽는 수학 마술","12번 · 인주중 · 수학으로 놀자!","13번 · 서산부춘중 · 정다면체 왁뿌볼 만들기","14번 · 대산중 · 잘라도 잘라도 사라지지 않는 삼각형! (시어핀스키 삼각형의 비밀)","15번 · 대철중 · 피타고라스 음계 피리 만들기","16번 · 연무중 · 나만의 AI 픽셀아트 연구소","17번 · 금산중 · set을 찾아라!","18번 · 홍산중 · 기둥 없이 공중에 뜬다고? 텐세그리티 탐구","19번 · 서천중 · 한붓 그리기 명함 만들기","20번 · 한산중 · 님게임을 통해 다양한 변화규칙 탐구하기","21번 · 임성중 · 테트로미노를 눌러봐!!","22번 · 태안여중 · 고전 확률 게임을 직접 체험하고 도박의 위험성 파악하기","23번 · 천안여고 · AI와 함께 뚝딱! 나만의 수학 게임 만들기","24번 · 서천고 · 평면이 입체가 되는 순간: 두 면이 만나는 비밀","25번 · 한일고 · 좌표평면 탈출게임, 매트릭스 러너","26번 · 한일고 · 함수를 이용하여 지뢰를 찾아라!","27번 · 충남과학고 · 비눗막으로 알아보는 최소곡면의 수학적 원리","28번 · 충남과학고 · 초-중-고 맞춤형 수학 도전! 길거리 문제 릴레이","29번 · 충남과학고 · 촘프 게임","30번 · 대산고 · 거울 속 수학, 게임 속 수학","31번 · 건양고 · 펜플롯·세팍타크로 공·탄성체 수학 체험","32번 · 건양고 · 스트링매쓰포켓 ‧ 바람개비 ‧ 원뿔모자 만들기 수학체험","33번 · 태안여고 · 안과 밖의 구분이 없는 도형, 클라인병 만들기","34번 · 충남과학고 · 뫼비우스의 띠와 클라인 병 만들기","특별체험 · 수학 방탈출 게임","특별체험 · 수학 대형 교구 체험","특별체험 · 종이접기 특강","특별체험 · 수학과 진로진학","특별체험 · 수학 퀴즈 대회","창의수학 탐구대회 우수 동아리 발표"];
+$("booth").innerHTML = `<option value="">선택 안 함</option>` + BOOTH_OPTIONS.map(o => `<option>${esc(o)}</option>`).join("") + `<option>기타 (운영본부·지원 등)</option>`;
+
+async function call(payload) {
+  let res, data = {};
+  try { res = await fetch(API, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) }); }
+  catch (e) { throw new Error("인터넷 연결을 확인하고 다시 눌러 주세요."); }
+  try { data = await res.json(); } catch (e) {}
+  if (!res.ok) throw new Error(data.error || "저장하지 못했어요. 잠시 뒤 다시 눌러 주세요.");
+  return data;
+}
+
+/* ================= 서명 칸 ================= */
+const cv = $("sig"); let ctx, strokes = 0, drawing = false;
+function setupCanvas() {
+  const r = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+  cv.width = w * r; cv.height = h * r; ctx = cv.getContext("2d"); ctx.scale(r, r);
+  ctx.lineWidth = 3; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.strokeStyle = "#111";
+  strokes = 0; $("sigPh").hidden = false;
+}
+const pos = (e) => { const b = cv.getBoundingClientRect(); return [e.clientX - b.left, e.clientY - b.top]; };
+cv.addEventListener("pointerdown", e => { drawing = true; cv.setPointerCapture(e.pointerId); ctx.beginPath(); ctx.moveTo(...pos(e)); $("sigPh").hidden = true; });
+cv.addEventListener("pointermove", e => { if (!drawing) return; ctx.lineTo(...pos(e)); ctx.stroke(); strokes++; });
+const stop = () => { drawing = false; };
+cv.addEventListener("pointerup", stop); cv.addEventListener("pointercancel", stop);
+$("sigClear").addEventListener("click", setupCanvas);
+
+function signatureData() {
+  // 흰 바탕 PNG, 가로 600px로 줄여 저장
+  const out = document.createElement("canvas"); const ratio = cv.height / cv.width;
+  out.width = 600; out.height = Math.round(600 * ratio);
+  const o = out.getContext("2d"); o.fillStyle = "#fff"; o.fillRect(0, 0, out.width, out.height);
+  o.drawImage(cv, 0, 0, out.width, out.height);
+  return out.toDataURL("image/png");
+}
+
+/* ================= 등록 ================= */
+$("regForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const school = $("school").value.trim(), name = $("name").value.trim(), booth = $("booth").value;
+  const err = $("formErr"); err.textContent = "";
+  if (!school) { err.textContent = "학교명을 적어 주세요."; $("school").focus(); return; }
+  if (!name) { err.textContent = "성명을 적어 주세요."; $("name").focus(); return; }
+  if (strokes < 8) { err.textContent = "서명 칸에 서명해 주세요."; return; }
+  const btn = $("submitBtn"); btn.disabled = true; btn.textContent = "등록하는 중…";
+  try {
+    const signature = signatureData();
+    const r = await call({ action: "submit", school, name, booth, signature });
+    $("regForm").hidden = true; $("doneView").hidden = false;
+    $("doneText").textContent = `${school} ${name} 선생님 · ${fmt(r.at)} 등록`;
+    $("doneSig").src = signature; window.scrollTo(0, 0);
+  } catch (ex) { err.textContent = ex.message; }
+  btn.disabled = false; btn.textContent = "등록하기";
+});
+$("again").addEventListener("click", () => {
+  ["school", "name"].forEach(id => $(id).value = ""); $("booth").value = "";
+  $("doneView").hidden = true; $("regForm").hidden = false; setupCanvas();
+});
+
+/* ================= 관리 화면 ================= */
+let PW = null, DATA = { items: [], roster: [] };
+try { PW = sessionStorage.getItem("hmreg:pw"); } catch (e) {}
+
+function route() {
+  const admin = location.hash === "#admin";
+  $("formView").hidden = admin; $("adminView").hidden = !admin;
+  $("headTitle").textContent = admin ? "지도교사 등록부 관리" : "지도교사 등록부";
+  if (!admin) { setupCanvas(); return; }
+  if (PW) loadList(); else { $("loginForm").hidden = false; $("adminBody").hidden = true; }
+}
+window.addEventListener("hashchange", route);
+
+$("loginForm").addEventListener("submit", async e => {
+  e.preventDefault(); PW = $("pw").value.trim(); $("pwErr").textContent = "";
+  try { await loadList(true); try { sessionStorage.setItem("hmreg:pw", PW); } catch (e) {} }
+  catch (ex) { $("pwErr").textContent = ex.message; PW = null; }
+});
+$("logout").addEventListener("click", () => { PW = null; try { sessionStorage.removeItem("hmreg:pw"); } catch (e) {} route(); });
+$("refresh").addEventListener("click", () => loadList());
+
+async function loadList(throwErr) {
+  try {
+    DATA = await call({ action: "list", password: PW });
+    $("loginForm").hidden = true; $("adminBody").hidden = false; renderAdmin();
+  } catch (ex) {
+    if (throwErr) throw ex;
+    PW = null; $("loginForm").hidden = false; $("adminBody").hidden = true; $("pwErr").textContent = ex.message;
+  }
+}
+
+/* 같은 사람이 여러 번 등록했으면 마지막 것만 '유효'로 */
+function latestByPerson(items) {
+  const m = new Map(); items.forEach(it => m.set(norm(it.school) + "|" + norm(it.name), it)); return new Set([...m.values()].map(x => x.key));
+}
+function rosterCheck() {
+  const names = new Set(DATA.items.map(i => norm(i.name)));
+  const rows = [], people = new Map();
+  DATA.roster.forEach(r => r.teachers.forEach(t => {
+    const ok = names.has(norm(t)); people.set(norm(t), ok);
+    rows.push({ where: r.n ? `${r.n}번 부스` : r.group, school: r.school, teacher: t, ok });
+  }));
+  const vals = [...people.values()];   // 두 부스를 맡은 선생님은 한 번만 셈
+  return { rows, done: vals.filter(Boolean).length, miss: vals.filter(v => !v).length };
+}
+
+function renderAdmin() {
+  const latest = latestByPerson(DATA.items);
+  const chk = rosterCheck();
+  $("sTotal").textContent = latest.size; $("sDone").textContent = chk.done; $("sMiss").textContent = chk.miss;
+  $("listTable").innerHTML = DATA.items.length ? `<table><thead><tr><th>연번</th><th>등록 시각</th><th>학교</th><th>성명</th><th>담당</th><th>서명</th><th></th></tr></thead><tbody>${
+    DATA.items.map((it, i) => `<tr${latest.has(it.key) ? "" : ' style="opacity:.45"'}>
+      <td class="num">${i + 1}</td><td class="num">${fmt(it.at)}</td><td>${esc(it.school)}</td><td><b>${esc(it.name)}</b>${latest.has(it.key) ? "" : ' <span class="chip no">이전 등록</span>'}</td>
+      <td>${esc(it.booth || "")}</td><td><img src="${esc(it.signature)}" alt="${esc(it.name)} 서명"></td>
+      <td><button class="btn danger small" data-del="${esc(it.key)}">삭제</button></td></tr>`).join("")}</tbody></table>`
+    : `<p class="muted">아직 등록한 선생님이 없어요.</p>`;
+  $("listTable").querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", async () => {
+    if (!b.dataset.armed) { b.dataset.armed = "1"; b.textContent = "정말 삭제"; return; }
+    b.disabled = true;
+    try { await call({ action: "delete", key: b.dataset.del, password: PW }); await loadList(); } catch (ex) { b.textContent = ex.message; }
+  }));
+  $("checkTable").innerHTML = `<table><thead><tr><th>부스·프로그램</th><th>학교</th><th>지도교사</th><th>등록</th></tr></thead><tbody>${
+    chk.rows.map(r => `<tr><td>${esc(r.where)}</td><td>${esc(r.school)}</td><td>${esc(r.teacher)}</td><td>${r.ok ? '<span class="chip ok">등록 완료</span>' : '<span class="chip no">미등록</span>'}</td></tr>`).join("")}</tbody></table>`;
+  buildPrint(latest);
+}
+
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-pressed", String(x === t)));
+  $("listCard").hidden = t.dataset.t !== "list"; $("checkCard").hidden = t.dataset.t !== "check";
+}));
+
+/* 엑셀(CSV) 내려받기 */
+$("csv").addEventListener("click", () => {
+  const latest = latestByPerson(DATA.items);
+  const q = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const lines = [["연번", "등록 시각", "학교", "성명", "담당", "비고"].map(q).join(",")]
+    .concat(DATA.items.map((it, i) => [i + 1, fmt(it.at), it.school, it.name, it.booth || "", latest.has(it.key) ? "" : "이전 등록(재등록함)"].map(q).join(",")));
+  const blob = new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "hanmadang-2026-teacher-register.csv";
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+});
+
+/* 인쇄용 등록부 (사람마다 마지막 등록만) */
+function buildPrint(latest) {
+  const rows = DATA.items.filter(it => latest.has(it.key));
+  $("printSheet").innerHTML = `<h1>2026 제15회 충남 수학교육 한마당 지도교사 등록부</h1>
+    <p class="sub">일시: 2026. 10. 30.(금) 10:00~16:00 · 장소: 부여 국민체육센터</p>
+    <table><thead><tr><th style="width:9%">연번</th><th style="width:27%">학교명</th><th style="width:17%">성명</th><th style="width:31%">서명</th><th style="width:16%">등록 시각</th></tr></thead><tbody>${
+    rows.map((it, i) => `<tr><td class="c">${i + 1}</td><td>${esc(it.school)}</td><td class="c">${esc(it.name)}</td><td class="c"><img src="${esc(it.signature)}" alt=""></td><td class="c">${fmt(it.at)}</td></tr>`).join("")}</tbody></table>`;
+}
+$("print").addEventListener("click", () => window.print());
+
+/* 등록 화면 QR */
+$("showQr").addEventListener("click", () => {
+  const card = $("qrCard"); card.hidden = !card.hidden; if (card.hidden) return;
+  const url = location.origin + "/register.html";
+  $("qrUrl").textContent = url; $("qrBox").innerHTML = "";
+  if (window.QRCode) new QRCode($("qrBox"), { text: url, width: 440, height: 440, correctLevel: QRCode.CorrectLevel.M });
+  else $("qrBox").textContent = "QR을 만들려면 인터넷 연결이 필요해요.";
+});
+
+route();
+window.addEventListener("resize", () => { if (location.hash !== "#admin" && strokes === 0) setupCanvas(); });
+</script>
+</body>
+</html>
